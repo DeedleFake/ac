@@ -63,6 +63,7 @@ func verb(f fmt.State, c rune) string {
 	}
 
 	if p, ok := f.Precision(); ok {
+		buf.WriteRune('.')
 		fmt.Fprint(&buf, p)
 	}
 
