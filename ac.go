@@ -1,3 +1,18 @@
+// Package ac provides simple functionality for producing ANSI
+// color-code output.
+//
+// This package is designed to be used in conjunction with the
+// standard library's fmt package. For example,
+//
+//    fmt.Printf("%s %v\n", ac.Red{"Error:"}, err)
+//
+// will produce a red "Error:" prefix in the termnial. The other types
+// in this package work much the same way. Any formatting verb may be
+// used with the types in this package, and it will produce the same
+// output as if the type stored in the color type was used directly,
+// but colored. Note that this colors the entire output, so if, for
+// example, "%q" is the verb used, the quotation marks will also be
+// colored.
 package ac
 
 import (
@@ -6,6 +21,9 @@ import (
 	"strings"
 )
 
+// ANSI color codes, exported for convienence. These are rarely
+// necessary to use directly, but might be for some custom formatting
+// cases.
 const (
 	BlackCode = "\u001b[3" + string('0'+iota) + "m"
 	RedCode
