@@ -19,6 +19,6 @@ func (s Sum)String() string {
 
 func main() {
 	s := Sum{Left: 3.231, Right: 5.561}
-	fmt.Printf("%.3v + %.3v = %.3v", ac.Blue{s.Left}, ac.Blue{s.Right}, ac.Cyan{s})
+	fmt.Printf("%.3v + %.3v = %.3v", ac.Blue(s.Left), ac.Blue(s.Right), ac.Cyan(s))
 }
 ```

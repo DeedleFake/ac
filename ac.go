@@ -4,7 +4,7 @@
 // This package is designed to be used in conjunction with the
 // standard library's fmt package. For example,
 //
-//    fmt.Printf("%s %v\n", ac.Red{"Error:"}, err)
+//    fmt.Printf("%s %v\n", ac.Red("Error:"), err)
 //
 // will produce a red "Error:" prefix in the termnial. The other types
 // in this package work much the same way. Any formatting verb may be
@@ -20,6 +20,10 @@ import (
 	"io"
 	"strings"
 )
+
+// Disabled disables all coloration. This allows a client to, for
+// example, turn off coloring easily when printing to a non-terminal.
+var Disabled bool
 
 // ANSI color codes, exported for convienence. These are rarely
 // necessary to use directly, but might be for some custom formatting
@@ -71,162 +75,189 @@ func verb(f fmt.State, c rune) string {
 	return buf.String()
 }
 
-type Black struct {
-	V interface{}
+type colorizer struct {
+	v    interface{}
+	code string
 }
 
-func (v Black) Format(f fmt.State, c rune) {
-	io.WriteString(f, BlackCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
+func (col colorizer) Format(f fmt.State, c rune) {
+	io.WriteString(f, col.code)
+	fmt.Fprintf(f, verb(f, c), col.v)
 	io.WriteString(f, ResetCode)
 }
 
-type Red struct {
-	V interface{}
+func Black(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: BlackCode,
+	}
 }
 
-func (v Red) Format(f fmt.State, c rune) {
-	io.WriteString(f, RedCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
+func Red(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: RedCode,
+	}
 }
 
-type Green struct {
-	V interface{}
+func Green(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: GreenCode,
+	}
 }
 
-func (v Green) Format(f fmt.State, c rune) {
-	io.WriteString(f, GreenCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
+func Yellow(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: YellowCode,
+	}
 }
 
-type Yellow struct {
-	V interface{}
+func Blue(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: BlueCode,
+	}
 }
 
-func (v Yellow) Format(f fmt.State, c rune) {
-	io.WriteString(f, YellowCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
+func Magenta(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: MagentaCode,
+	}
 }
 
-type Blue struct {
-	V interface{}
+func Cyan(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: CyanCode,
+	}
 }
 
-func (v Blue) Format(f fmt.State, c rune) {
-	io.WriteString(f, BlueCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
+func White(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: WhiteCode,
+	}
 }
 
-type Magenta struct {
-	V interface{}
+func BrightBlack(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: BrightBlackCode,
+	}
 }
 
-func (v Magenta) Format(f fmt.State, c rune) {
-	io.WriteString(f, MagentaCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
+func BrightRed(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: BrightRedCode,
+	}
 }
 
-type Cyan struct {
-	V interface{}
+func BrightGreen(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: BrightGreenCode,
+	}
 }
 
-func (v Cyan) Format(f fmt.State, c rune) {
-	io.WriteString(f, CyanCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
+func BrightYellow(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: BrightYellowCode,
+	}
 }
 
-type White struct {
-	V interface{}
+func BrightBlue(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: BrightBlueCode,
+	}
 }
 
-func (v White) Format(f fmt.State, c rune) {
-	io.WriteString(f, WhiteCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
+func BrightMagenta(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: BrightMagentaCode,
+	}
 }
 
-type BrightBlack struct {
-	V interface{}
+func BrightCyan(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
+
+	return colorizer{
+		v:    v,
+		code: BrightCyanCode,
+	}
 }
 
-func (v BrightBlack) Format(f fmt.State, c rune) {
-	io.WriteString(f, BrightBlackCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
-}
+func BrightWhite(v interface{}) interface{} {
+	if Disabled {
+		return v
+	}
 
-type BrightRed struct {
-	V interface{}
-}
-
-func (v BrightRed) Format(f fmt.State, c rune) {
-	io.WriteString(f, BrightRedCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
-}
-
-type BrightGreen struct {
-	V interface{}
-}
-
-func (v BrightGreen) Format(f fmt.State, c rune) {
-	io.WriteString(f, BrightGreenCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
-}
-
-type BrightYellow struct {
-	V interface{}
-}
-
-func (v BrightYellow) Format(f fmt.State, c rune) {
-	io.WriteString(f, BrightYellowCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
-}
-
-type BrightBlue struct {
-	V interface{}
-}
-
-func (v BrightBlue) Format(f fmt.State, c rune) {
-	io.WriteString(f, BrightBlueCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
-}
-
-type BrightMagenta struct {
-	V interface{}
-}
-
-func (v BrightMagenta) Format(f fmt.State, c rune) {
-	io.WriteString(f, BrightMagentaCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
-}
-
-type BrightCyan struct {
-	V interface{}
-}
-
-func (v BrightCyan) Format(f fmt.State, c rune) {
-	io.WriteString(f, BrightCyanCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
-}
-
-type BrightWhite struct {
-	V interface{}
-}
-
-func (v BrightWhite) Format(f fmt.State, c rune) {
-	io.WriteString(f, BrightWhiteCode)
-	fmt.Fprintf(f, verb(f, c), v.V)
-	io.WriteString(f, ResetCode)
+	return colorizer{
+		v:    v,
+		code: BrightWhiteCode,
+	}
 }
